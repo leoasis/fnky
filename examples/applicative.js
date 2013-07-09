@@ -1,10 +1,10 @@
-var curried = require('./curried');
-var Maybe = require('./maybe');
+var curried = require('../curried');
+var Maybe = require('../maybe');
 
-var functor = require('./functor');
+var functor = require('../functor');
 var fmap = functor.fmap;
 
-var applicative = require('./applicative');
+var applicative = require('../applicative');
 var pure = applicative.pure;
 var ap = applicative.ap;
 

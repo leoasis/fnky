@@ -1,3 +1,5 @@
+var curried = require('./curried');
+
 var functor = function(type, definition) {
   type.prototype.fmap = definition.fmap;
 };
@@ -6,7 +8,7 @@ var fmap = function(f, functor) {
   return functor.fmap(f);
 };
 
-functor.fmap = fmap;
+functor.fmap = curried(fmap);
 
 module.exports = functor;
 

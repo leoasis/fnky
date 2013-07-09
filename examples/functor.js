@@ -1,6 +1,7 @@
-var functor = require('./functor');
+var functor = require('../functor');
 var fmap = functor.fmap;
-var curried = require('./curried');
+var curried = require('../curried');
+var Maybe = require('../maybe');
 
 function length(val) {
   return val.length;
@@ -18,6 +19,7 @@ console.log(fmap(length, { a: "hola", b: "mundo" }));
 
 var add8 = add(8);
 console.log(fmap(add(8), [1, 2, 3]));
+console.log(fmap(add8, [1, 2, 3]));
 
 
 function Tree(value, left, right) {
@@ -42,3 +44,13 @@ console.log(fmap(function(val) { return val * 3; }, tree));
 
 
 console.log(fmap(length, sayTheNumber)(15));
+
+var liftedAdd8 = fmap(add8);
+
+console.log(liftedAdd8(Maybe(10)));
+console.log(liftedAdd8(Maybe(null)));
+
+console.log(liftedAdd8([1, 2, 3, 4]));
+console.log(liftedAdd8([]));
+
+
