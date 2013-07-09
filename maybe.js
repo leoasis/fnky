@@ -2,17 +2,15 @@ var functor = require('./functor');
 var fmap = functor.fmap;
 var applicative = require('./applicative');
 
-var Maybe = function(val) {
+function Maybe(val) {
   if (!(this instanceof Maybe))
     return new Maybe(val);
 
   this.val = val;
-};
+}
 
-Maybe.prototype = {
-  isNothing: function() {
-    return this.val === null || typeof this.val === "undefined";
-  }
+Maybe.prototype.isNothing = function() {
+  return this.val === null || typeof this.val === "undefined";
 };
 
 functor(Maybe, {
