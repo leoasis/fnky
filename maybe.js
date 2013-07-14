@@ -1,5 +1,5 @@
 var functor = require('./functor');
-var fmap = functor.fmap;
+var map = functor.map;
 var applicative = require('./applicative');
 
 function Maybe(val) {
@@ -14,15 +14,15 @@ Maybe.prototype.isNothing = function() {
 };
 
 functor(Maybe, {
-  fmap: function(f) {
+  map: function(f) {
     return this.isNothing() ? Maybe(null) : Maybe(f(this.val));
   }
 });
 
 applicative(Maybe, {
-  pure: function(val) { return Maybe(val); },
+  of: function(val) { return Maybe(val); },
   ap: function(a) {
-    return this.isNothing() ? Maybe(null) : fmap(this.val, a);
+    return this.isNothing() ? Maybe(null) : map(this.val, a);
   }
 });
 

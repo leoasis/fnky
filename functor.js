@@ -1,27 +1,19 @@
 var curried = require('./curried');
 
 var functor = function(type, definition) {
-  type.prototype.fmap = definition.fmap;
+  type.prototype.map = definition.map;
 };
 
-var fmap = function(f, functor) {
-  return functor.fmap(f);
+var map = function(f, functor) {
+  return functor.map(f);
 };
 
-functor.fmap = curried(fmap);
+functor.map = curried(map);
 
 module.exports = functor;
 
-functor(Array, {
-  fmap: function(f) {
-    return this.map(function(x) {
-      return f(x);
-    });
-  }
-});
-
 functor(Object, {
-  fmap: function(f) {
+  map: function(f) {
     var mapped = {};
     for (var key in this) {
       if (this.hasOwnProperty(key))
@@ -32,7 +24,7 @@ functor(Object, {
 });
 
 functor(Function, {
-  fmap: function(f) {
+  map: function(f) {
     var self = this;
     return function(x) {
       return f(self(x));

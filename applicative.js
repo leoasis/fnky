@@ -1,7 +1,16 @@
 var curried = require('./curried');
 
+var derivables = {
+  map: function(f) {
+    return this.of(f).ap(this);
+  }
+};
+
 var applicative = function(type, definition) {
-  type.pure = definition.pure;
+  type.of = definition.of;
+  if (typeof type.prototype.map != "function")
+    type.prototype.map = derivables.map;
+  type.prototype.of = definition.of;
   type.prototype.ap = definition.ap;
   type.prototype.coerce = function() {
     return this;
@@ -27,7 +36,7 @@ function Pure(val) {
 }
 
 Pure.prototype.coerce = function(other) {
-  return other.pure(this.val);
+  return other.of(this.val);
 };
 
 applicative.ap = curried(2, ap);
@@ -35,7 +44,7 @@ applicative.pure = pure;
 module.exports = applicative;
 
 applicative(Array, {
-  pure: function(value) {
+  of: function(value) {
     return [value];
   },
   ap: function(other) {
@@ -46,5 +55,17 @@ applicative(Array, {
       });
     });
     return ret;
+  }
+});
+
+applicative(Function, {
+  of: function(value) {
+    return function() { return value; };
+  },
+  ap: function(other) {
+    var self = this;
+    return function(value) {
+      return self(value)(other(value));
+    };
   }
 });

@@ -1,5 +1,5 @@
 var functor = require('../functor');
-var fmap = functor.fmap;
+var map = functor.map;
 var curried = require('../curried');
 var Maybe = require('../maybe');
 
@@ -13,13 +13,13 @@ function sayTheNumber(num) {
   return "I'm telling you the number " + num;
 }
 
-console.log(fmap(function(val) { return val * 3; }, [1, 2, 3]));
-console.log(fmap(sayTheNumber, [1, 2, 3]));
-console.log(fmap(length, { a: "hola", b: "mundo" }));
+console.log(map(function(val) { return val * 3; }, [1, 2, 3]));
+console.log(map(sayTheNumber, [1, 2, 3]));
+console.log(map(length, { a: "hola", b: "mundo" }));
 
 var add8 = add(8);
-console.log(fmap(add(8), [1, 2, 3]));
-console.log(fmap(add8, [1, 2, 3]));
+console.log(map(add(8), [1, 2, 3]));
+console.log(map(add8, [1, 2, 3]));
 
 
 function Tree(value, left, right) {
@@ -33,19 +33,19 @@ var tree = new Tree(1, new Tree(2, new Tree(4), new Tree(5)), new Tree(3));
 console.log(tree);
 
 functor(Tree, {
-  fmap: function(f) {
-    var mappedLeft = this.left && fmap(f, this.left);
-    var mappedRight = this.right && fmap(f, this.right);
+  map: function(f) {
+    var mappedLeft = this.left && map(f, this.left);
+    var mappedRight = this.right && map(f, this.right);
     return new Tree(f(this.value), mappedLeft, mappedRight);
   }
 });
 
-console.log(fmap(function(val) { return val * 3; }, tree));
+console.log(map(function(val) { return val * 3; }, tree));
 
 
-console.log(fmap(length, sayTheNumber)(15));
+console.log(map(length, sayTheNumber)(15));
 
-var liftedAdd8 = fmap(add8);
+var liftedAdd8 = map(add8);
 
 console.log(liftedAdd8(Maybe(10)));
 console.log(liftedAdd8(Maybe(null)));
