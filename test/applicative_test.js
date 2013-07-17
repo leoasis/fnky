@@ -12,7 +12,6 @@ describe('applicative', function() {
       it('pure/of 1', function() {
         pure(1).coerce(Array).should.eql([1]);
         Array.of(1).should.eql([1]);
-        [].of(1).should.eql([1]);
       });
 
       it('ap pure(add) [1, 2] [3, 4]', function() {
@@ -26,7 +25,6 @@ describe('applicative', function() {
       it('pure/of 1', function() {
         pure(1).coerce(Function)("whatever").should.eql(1);
         Function.of(1)("whatever").should.eql(1);
-        (function() {}).of(1)("whatever").should.eql(1);
       });
 
       function plus3(n) { return n + 3; }

@@ -1,7 +1,14 @@
+var utils = require('./utils');
 var curried = require('./curried');
+var hasProperty = utils.hasProperty;
+var isOwnFunction = utils.isOwnFunction;
 
 var functor = function(type, definition) {
-  type.prototype.map = definition.map;
+  if (!isOwnFunction(type.prototype, 'map')) {
+    if (!isOwnFunction(definition, 'map'))
+      throw new Error("You need to implement the method `map`");
+    type.prototype.map = definition.map;
+  }
 };
 
 var map = function(f, functor) {
@@ -16,7 +23,7 @@ functor(Object, {
   map: function(f) {
     var mapped = {};
     for (var key in this) {
-      if (this.hasOwnProperty(key))
+      if (hasProperty(this, key))
         mapped[key] = f(this[key]);
     }
     return mapped;

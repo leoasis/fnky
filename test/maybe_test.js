@@ -49,4 +49,20 @@ describe('Maybe', function() {
       Maybe.of(null).ap(Maybe(2)).ap(Maybe(3)).should.eql(Maybe(null));
     });
   });
+
+  describe('as monad', function() {
+    function mayFail(a) { return a > 5 ? Maybe(null) : Maybe(2 * a); }
+
+    it('of 10 chain mayFail', function() {
+      Maybe.of(10).chain(mayFail).should.eql(Maybe(null));
+    });
+
+    it('of 4 chain mayFail', function() {
+      Maybe.of(4).chain(mayFail).should.eql(Maybe(8));
+    });
+
+    it('maybe null chain mayFail', function() {
+      Maybe(null).chain(mayFail).should.eql(Maybe(null));
+    });
+  });
 });

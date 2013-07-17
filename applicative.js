@@ -1,20 +1,39 @@
+var utils = require('./utils');
 var curried = require('./curried');
+var functor = require('./functor');
+var ownPropFrom = utils.ownPropFrom;
+var isOwnFunction = utils.isOwnFunction;
 
 var derivables = {
   map: function(f) {
-    return this.of(f).ap(this);
+    return this.constructor.of(f).ap(this);
   }
 };
 
 var applicative = function(type, definition) {
-  type.of = definition.of;
-  if (typeof type.prototype.map != "function")
-    type.prototype.map = derivables.map;
-  type.prototype.of = definition.of;
-  type.prototype.ap = definition.ap;
+  if (!isOwnFunction(type, 'of')) {
+    if (!isOwnFunction(definition, 'of'))
+      throw new Error("You need to implement the method `of`");
+
+    type.of = definition.of;
+  }
+  if (!isOwnFunction(type.prototype, 'ap')) {
+    if (!isOwnFunction(definition, 'ap'))
+      throw new Error("You need to implement the method `ap`");
+
+    type.prototype.ap = definition.ap;
+  }
+
+  var newDefinition = {
+    map: ownPropFrom(definition, 'map') || derivables.map
+  };
+
   type.prototype.coerce = function() {
     return this;
   };
+
+  functor(type, newDefinition);
+
 };
 
 function ap() {
@@ -39,6 +58,7 @@ Pure.prototype.coerce = function(other) {
   return other.of(this.val);
 };
 
+applicative.map = functor.map;
 applicative.ap = curried(2, ap);
 applicative.pure = pure;
 module.exports = applicative;
