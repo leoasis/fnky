@@ -6,7 +6,7 @@ var isOwnFunction = utils.isOwnFunction;
 var derivables = {
   map: function(f) {
     var m = this;
-    return m.chain(function(a) { return m.of(f(a)); });
+    return m.chain(function(a) { return m.constructor.of(f(a)); });
   },
   ap: function(other) {
     return this.chain(function(f) { return other.map(f); });
