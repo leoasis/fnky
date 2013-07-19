@@ -4,102 +4,99 @@ var pure = monad.pure;
 
 describe('monad', function() {
   describe('definition', function() {
-    describe('minimal construction', function() {
-      it('throws if chain not defined', function() {
-        (function() {
-          function Monad(){}
-          monad(Monad, {
-            of: function() {}
-          });
-        }).should.throwError("You need to implement the method `chain`");
-      });
-
-      it('throws if of not defined', function() {
-        (function() {
-          function Monad(){}
-          monad(Monad, {
-            chain: function() {}
-          });
-        }).should.throwError("You need to implement the method `of`");
-      });
-
-      it('must be enough to define chain and of', function() {
-        (function() {
-          function Monad(){}
-          monad(Monad, {
-            chain: function() {},
-            of: function() {}
-          });
-        }).should.not.throwError();
-      });
-
-      describe('when constructed with chain and of only', function() {
-        var Monad, chain, of;
-
-        beforeEach(function() {
-          Monad = function() {};
-          chain = function() {};
-          of = function() {};
-
-          monad(Monad, {
-            chain: chain,
-            of: of
-          });
+    it('throws if chain not defined', function() {
+      (function() {
+        function Monad(){}
+        monad(Monad, {
+          of: function() {}
         });
+      }).should.throwError("You need to implement the method `chain`");
+    });
 
-        it('puts the `chain` function in the monad prototype', function() {
-          Monad.prototype.chain.should.equal(chain);
+    it('throws if of not defined', function() {
+      (function() {
+        function Monad(){}
+        monad(Monad, {
+          chain: function() {}
         });
+      }).should.throwError("You need to implement the method `of`");
+    });
 
-        it('puts the `of` function in the monad constructor', function() {
-          Monad.of.should.equal(of);
+    it('must be enough to define chain and of', function() {
+      (function() {
+        function Monad(){}
+        monad(Monad, {
+          chain: function() {},
+          of: function() {}
         });
+      }).should.not.throwError();
+    });
 
-        it('derives `map` in terms of `chain` and `of` and puts it in the prototype', function() {
-          var map = Monad.prototype.map;
-          map.should.be.an.instanceOf(Function);
-          map.toString().should.include('chain');
-          map.toString().should.include('of');
-        });
+    describe('when constructed with chain and of only', function() {
+      var Monad, chain, of;
 
-        it('derives `ap` in terms of `chain` and `map` and puts it in the prototype', function() {
-          var ap = Monad.prototype.ap;
-          ap.should.be.an.instanceOf(Function);
-          ap.toString().should.include('chain');
-          ap.toString().should.include('map');
+      beforeEach(function() {
+        Monad = function() {};
+        chain = function() {};
+        of = function() {};
+
+        monad(Monad, {
+          chain: chain,
+          of: of
         });
       });
 
-      describe('with functions previously defined', function() {
-        var Monad, of, map, ap;
+      it('puts the `chain` function in the monad prototype', function() {
+        Monad.prototype.chain.should.equal(chain);
+      });
 
-        beforeEach(function() {
-          Monad = function() {};
-          of = function() {};
-          map = function() {};
-          ap = function() {};
-          Monad.of = of;
-          Monad.prototype.ap = ap;
-          Monad.prototype.map = map;
+      it('puts the `of` function in the monad constructor', function() {
+        Monad.of.should.equal(of);
+      });
 
-          monad(Monad, {
-            chain: function() {}
-          });
-        });
+      it('derives `map` in terms of `chain` and `of` and puts it in the prototype', function() {
+        var map = Monad.prototype.map;
+        map.should.be.an.instanceOf(Function);
+        map.toString().should.include('chain');
+        map.toString().should.include('of');
+      });
 
-        it('preserves `of` if previously defined', function() {
-          Monad.of.should.equal(of);
-        });
+      it('derives `ap` in terms of `chain` and `map` and puts it in the prototype', function() {
+        var ap = Monad.prototype.ap;
+        ap.should.be.an.instanceOf(Function);
+        ap.toString().should.include('chain');
+        ap.toString().should.include('map');
+      });
+    });
 
-        it('preserves `ap` if previously defined', function() {
-          Monad.prototype.ap.should.equal(ap);
-        });
+    describe('with functions previously defined', function() {
+      var Monad, of, map, ap;
 
-        it('preserves `map` if previously defined', function() {
-          Monad.prototype.map.should.equal(map);
+      beforeEach(function() {
+        Monad = function() {};
+        of = function() {};
+        map = function() {};
+        ap = function() {};
+        Monad.of = of;
+        Monad.prototype.ap = ap;
+        Monad.prototype.map = map;
+
+        monad(Monad, {
+          chain: function() {}
         });
       });
 
+      it('preserves `of` if previously defined', function() {
+        Monad.of.should.equal(of);
+      });
+
+      it('preserves `ap` if previously defined', function() {
+        Monad.prototype.ap.should.equal(ap);
+      });
+
+      it('preserves `map` if previously defined', function() {
+        Monad.prototype.map.should.equal(map);
+      });
     });
   });
 
