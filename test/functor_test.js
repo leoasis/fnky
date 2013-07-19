@@ -3,6 +3,48 @@ var functor = require('../functor');
 var map = functor.map;
 
 describe('functor', function() {
+  describe('definition', function() {
+    it('throws if map not defined', function() {
+      (function() {
+        function Functor(){}
+        functor(Functor, {});
+      }).should.throwError("You need to implement the method `map`");
+    });
+
+    describe('when constructed with map', function() {
+      var Functor, map;
+
+      beforeEach(function() {
+        Functor = function() {};
+        map = function() {};
+
+        functor(Functor, {
+          map: map
+        });
+      });
+
+      it('puts the `map` function in the functor prototype', function() {
+        Functor.prototype.map.should.equal(map);
+      });
+    });
+
+    describe('with functions previously defined', function() {
+      var Functor, map;
+
+      beforeEach(function() {
+        Functor = function() {};
+        map = function() {};
+        Functor.prototype.map = map;
+
+        functor(Functor, {});
+      });
+
+      it('preserves `map` if previously defined', function() {
+        Functor.prototype.map.should.equal(map);
+      });
+    });
+  });
+
   describe('instances', function() {
     function inc(n) { return n + 1; }
 
