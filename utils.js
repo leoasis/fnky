@@ -10,6 +10,10 @@ var isFunction = exports.isFunction = function(f) {
   return typeof f === "function";
 };
 
-exports.isOwnFunction = function(obj, prop) {
+var isOwnFunction = exports.isOwnFunction = function(obj, prop) {
   return hasProperty(obj, prop) && isFunction(obj[prop]);
+};
+
+exports.ownFunctionFrom = function(obj, prop) {
+  return isOwnFunction(obj, prop) ? obj[prop] : null;
 };
