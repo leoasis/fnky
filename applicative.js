@@ -1,8 +1,7 @@
 var utils = require('./utils');
 var curried = require('./curried');
 var functor = require('./functor');
-var ownPropFrom = utils.ownPropFrom;
-var isOwnFunction = utils.isOwnFunction;
+var ownFunctionFrom = utils.ownFunctionFrom;
 
 var derivables = {
   map: function(f) {
@@ -11,21 +10,20 @@ var derivables = {
 };
 
 var applicative = function(type, definition) {
-  if (!isOwnFunction(type, 'of')) {
-    if (!isOwnFunction(definition, 'of'))
-      throw new Error("You need to implement the method `of`");
+  var ofFn = ownFunctionFrom(type, 'of') || ownFunctionFrom(type.prototype, 'of') || ownFunctionFrom(definition, 'of');
+  if (!ofFn)
+    throw new Error("You need to implement the method `of`");
 
-    type.of = definition.of;
-  }
-  if (!isOwnFunction(type.prototype, 'ap')) {
-    if (!isOwnFunction(definition, 'ap'))
-      throw new Error("You need to implement the method `ap`");
+  var apFn = ownFunctionFrom(type.prototype, 'ap') || ownFunctionFrom(definition, 'ap');
+  if (!apFn)
+    throw new Error("You need to implement the method `ap`");
 
-    type.prototype.ap = definition.ap;
-  }
+  type.of = type.prototype.of = ofFn;
+  type.prototype.ap = apFn;
+
 
   var newDefinition = {
-    map: ownPropFrom(definition, 'map') || derivables.map
+    map: ownFunctionFrom(definition, 'map') || derivables.map
   };
 
   type.prototype.coerce = function() {

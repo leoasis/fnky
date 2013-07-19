@@ -1,14 +1,14 @@
 var utils = require('./utils');
 var curried = require('./curried');
 var hasProperty = utils.hasProperty;
-var isOwnFunction = utils.isOwnFunction;
+var ownFunctionFrom = utils.ownFunctionFrom;
 
 var functor = function(type, definition) {
-  if (!isOwnFunction(type.prototype, 'map')) {
-    if (!isOwnFunction(definition, 'map'))
-      throw new Error("You need to implement the method `map`");
-    type.prototype.map = definition.map;
-  }
+  var mapFn = ownFunctionFrom(type.prototype, 'map') || ownFunctionFrom(definition, 'map');
+  if (!mapFn)
+    throw new Error("You need to implement the method `map`");
+
+  type.prototype.map = mapFn;
 };
 
 var map = function(f, functor) {

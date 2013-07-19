@@ -5,6 +5,89 @@ var ap = applicative.ap;
 var pure = applicative.pure;
 
 describe('applicative', function() {
+  describe('definition', function() {
+    it('throws if ap not defined', function() {
+      (function() {
+        function Applicative(){}
+        applicative(Applicative, {
+          of: function() {}
+        });
+      }).should.throwError("You need to implement the method `ap`");
+    });
+
+    it('throws if of not defined', function() {
+      (function() {
+        function Applicative(){}
+        applicative(Applicative, {
+          ap: function() {}
+        });
+      }).should.throwError("You need to implement the method `of`");
+    });
+
+    describe('when fully constructed', function() {
+      var Applicative, ap, of;
+
+      beforeEach(function() {
+        Applicative = function() {};
+        ap = function() {};
+        of = function() {};
+
+        applicative(Applicative, {
+          ap: ap,
+          of: of
+        });
+      });
+
+      it('puts the `ap` function in the applicative prototype', function() {
+        Applicative.prototype.ap.should.equal(ap);
+      });
+
+      it('puts the `of` function in the applicative constructor', function() {
+        Applicative.of.should.equal(of);
+      });
+
+      it('puts the `of` function in the applicative prototype', function() {
+        Applicative.prototype.of.should.equal(of);
+      });
+
+      it('derives `map` in terms of `ap` and `of` and puts it in the prototype', function() {
+        var map = Applicative.prototype.map;
+        map.should.be.an.instanceOf(Function);
+        map.toString().should.include('ap');
+        map.toString().should.include('of');
+      });
+    });
+
+    describe('with functions previously defined', function() {
+      var Applicative, of, map, ap;
+
+      beforeEach(function() {
+        Applicative = function() {};
+        of = function() {};
+        map = function() {};
+        ap = function() {};
+        Applicative.of = of;
+        Applicative.prototype.ap = ap;
+        Applicative.prototype.map = map;
+
+        applicative(Applicative, {});
+      });
+
+      it('preserves `of` if previously defined', function() {
+        Applicative.of.should.equal(of);
+        Applicative.prototype.of.should.equal(of);
+      });
+
+      it('preserves `ap` if previously defined', function() {
+        Applicative.prototype.ap.should.equal(ap);
+      });
+
+      it('preserves `map` if previously defined', function() {
+        Applicative.prototype.map.should.equal(map);
+      });
+    });
+  });
+
   describe('instances', function() {
     var add = curried(function(a, b) { return a + b; });
 
@@ -12,6 +95,7 @@ describe('applicative', function() {
       it('pure/of 1', function() {
         pure(1).coerce(Array).should.eql([1]);
         Array.of(1).should.eql([1]);
+        [].of(1).should.eql([1]);
       });
 
       it('ap pure(add) [1, 2] [3, 4]', function() {
@@ -25,6 +109,7 @@ describe('applicative', function() {
       it('pure/of 1', function() {
         pure(1).coerce(Function)("whatever").should.eql(1);
         Function.of(1)("whatever").should.eql(1);
+        (function() {}).of(1)("whatever").should.eql(1);
       });
 
       function plus3(n) { return n + 3; }
