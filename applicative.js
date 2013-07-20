@@ -11,12 +11,10 @@ var derivables = {
 
 var applicative = function(type, definition) {
   var ofFn = ownFunctionFrom(type, 'of') || ownFunctionFrom(type.prototype, 'of') || ownFunctionFrom(definition, 'of');
-  if (!ofFn)
-    throw new Error("You need to implement the method `of`");
+  utils.check(ofFn, 'notImplemented', 'of');
 
   var apFn = ownFunctionFrom(type.prototype, 'ap') || ownFunctionFrom(definition, 'ap');
-  if (!apFn)
-    throw new Error("You need to implement the method `ap`");
+  utils.check(apFn, 'notImplemented', 'ap');
 
   type.of = type.prototype.of = ofFn;
   type.prototype.ap = apFn;
@@ -31,7 +29,6 @@ var applicative = function(type, definition) {
   };
 
   functor(type, newDefinition);
-
 };
 
 function ap() {

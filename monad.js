@@ -1,7 +1,6 @@
 var utils = require('./utils');
 var applicative = require('./applicative');
-var ownPropFrom = utils.ownPropFrom;
-var isOwnFunction = utils.isOwnFunction;
+var ownFunctionFrom = utils.ownFunctionFrom;
 
 var derivables = {
   map: function(f) {
@@ -14,14 +13,15 @@ var derivables = {
 };
 
 function monad(type, definition) {
-  if (!isOwnFunction(definition, 'chain'))
-    throw new Error("You need to implement the method `chain`");
-  type.prototype.chain = definition.chain;
+  var chainFn = ownFunctionFrom(type.prototype, 'chain') || ownFunctionFrom(definition, 'chain');
+  utils.check(chainFn, 'notImplemented', 'chain');
+
+  type.prototype.chain = chainFn;
 
   var newDefinition = {
     of: definition.of,
-    map: ownPropFrom(definition, 'map') || derivables.map,
-    ap: ownPropFrom(definition, 'ap') || derivables.ap
+    map: ownFunctionFrom(definition, 'map') || derivables.map,
+    ap: ownFunctionFrom(definition, 'ap') || derivables.ap
   };
 
   applicative(type, newDefinition);

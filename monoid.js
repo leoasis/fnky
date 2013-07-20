@@ -4,12 +4,10 @@ var ownFunctionFrom = utils.ownFunctionFrom;
 
 function monoid(type, definition) {
   var emptyFn = ownFunctionFrom(type, 'empty') || ownFunctionFrom(type.prototype, 'empty') || ownFunctionFrom(definition, 'empty');
-  if (!emptyFn)
-    throw new Error("You need to implement the method `empty`");
+  utils.check(emptyFn, 'notImplemented', 'empty');
 
   var concatFn = ownFunctionFrom(type.prototype, 'concat') || ownFunctionFrom(definition, 'concat');
-  if (!concatFn)
-    throw new Error("You need to implement the method `concat`");
+  utils.check(concatFn, 'notImplemented', 'concat');
 
   type.empty = type.prototype.empty = emptyFn;
   type.prototype.concat = concatFn;

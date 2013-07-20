@@ -17,3 +17,13 @@ var isOwnFunction = exports.isOwnFunction = function(obj, prop) {
 exports.ownFunctionFrom = function(obj, prop) {
   return isOwnFunction(obj, prop) ? obj[prop] : null;
 };
+
+var messages = {
+  notImplemented: function(method) {
+    throw new Error("You need to implement the method `" + method + "`");
+  }
+};
+
+exports.check = function(what, message, arg) {
+  if (!what) messages[message](arg);
+};
