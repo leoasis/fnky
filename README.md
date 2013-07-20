@@ -1,3 +1,3 @@
-# Funky
+# Fnky
 
-Functional Programming Library in Javascript
+A funky (and "souly"?) library for functional programming in Javascript
