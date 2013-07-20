@@ -3,47 +3,43 @@ var map = monad.map;
 var curried = require('./curried');
 
 function Either(left, right) {
-  var x = function(right) {
-    return EitherA(left, right);
-  };
-  x.left = left;
-  x.of = EitherA.of; // A little hackish?
-  x.prototype = EitherA.prototype;
-
-  return arguments.length === 1 ? x : new x(right);
-}
-
-module.exports = Either;
-
-function EitherA(left, right) {
-  if (!(this instanceof EitherA)) return new EitherA(left, right);
+  if (!(this instanceof Either)) return new Either(left, right);
   this.left = left;
   this.right = right;
 }
+Either.right = function(right) {
+  return new Either(null, right);
+};
 
-EitherA.prototype.isLeft = function() {
+Either.left = function(left) {
+  return new Either(left, null);
+};
+
+module.exports = Either;
+
+Either.prototype.isLeft = function() {
   return this.right === null || typeof this.right === 'undefined';
 };
 
-monad(EitherA, {
+monad(Either, {
   map: function(f) {
     if (this.isLeft())
-      return EitherA(this.left, null);
+      return Either.left(this.left);
     else
-      return EitherA(this.left, f(this.right));
+      return Either.right(f(this.right));
   },
   of: function(value) {
-    return EitherA(this.left, value);
+    return Either.right(value);
   },
   ap: function(other) {
     if (this.isLeft())
-      return EitherA(this.left, null);
+      return Either.left(this.left);
     else
       return map(this.right, other);
   },
   chain: function(f) {
     if (this.isLeft())
-      return EitherA(this.left, null);
+      return Either.left(this.left);
     else
       return f(this.right);
   }

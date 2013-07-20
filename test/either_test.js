@@ -1,29 +1,26 @@
 require('should');
 var curried = require('../curried');
 var Either = require('../either');
+var right = Either.right;
+var left = Either.left;
 var map = require('../functor').map;
 var applicative = require('../applicative');
 var ap = applicative.ap;
 var pure = applicative.pure;
 
-describe('Either("default")', function() {
-  var either;
-
-  beforeEach(function() {
-    either = Either('default');
-  });
+describe('Either', function() {
 
   describe('as functor', function() {
     function inc(n) { return n + 1; }
 
-    it('map inc either(2)', function() {
-      map(inc, either(2)).should.eql(either(3));
-      either(2).map(inc).should.eql(either(3));
+    it('map inc right(2)', function() {
+      map(inc, right(2)).should.eql(right(3));
+      right(2).map(inc).should.eql(right(3));
     });
 
-    it('map inc either(null)', function() {
-      map(inc, either(null)).should.eql(either(null));
-      either(null).map(inc).should.eql(either(null));
+    it('map inc left("something")', function() {
+      map(inc, left(null)).should.eql(left(null));
+      left(null).map(inc).should.eql(left(null));
     });
   });
 
@@ -31,44 +28,44 @@ describe('Either("default")', function() {
     var add = curried(function(a, b) { return a + b; });
 
     it('pure/of 2', function() {
-      pure(2).coerce(either).should.eql(either(2));
-      either.of(2).should.eql(either(2));
+      pure(2).coerce(Either).should.eql(right(2));
+      Either.of(2).should.eql(right(2));
     });
 
-    it('ap pure(add) either(2) either(3)', function() {
-      ap(pure(add), either(2), either(3)).should.eql(either(5));
-      either.of(add).ap(either(2)).ap(either(3)).should.eql(either(5));
+    it('ap pure(add) right(2) right(3)', function() {
+      ap(pure(add), right(2), right(3)).should.eql(right(5));
+      Either.of(add).ap(right(2)).ap(right(3)).should.eql(right(5));
     });
 
-    it('ap pure(add) either(null) either(3)', function() {
-      ap(pure(add), either(null), either(3)).should.eql(either(null));
-      either.of(add).ap(either(null)).ap(either(3)).should.eql(either(null));
+    it('ap pure(add) left("something") right(3)', function() {
+      ap(pure(add), left("something"), right(3)).should.eql(left("something"));
+      Either.of(add).ap(left("something")).ap(right(3)).should.eql(left("something"));
     });
 
-    it('ap pure(add) either(2) either(null)', function() {
-      ap(pure(add), either(2), either(null)).should.eql(either(null));
-      either.of(add).ap(either(2)).ap(either(null)).should.eql(either(null));
+    it('ap pure(add) right(2) left("something")', function() {
+      ap(pure(add), right(2), left("something")).should.eql(left("something"));
+      Either.of(add).ap(right(2)).ap(left("something")).should.eql(left("something"));
     });
 
-    it('ap pure(null) either(2) either(3)', function() {
-      ap(pure(null), either(2), either(3)).should.eql(either(null));
-      either.of(null).ap(either(2)).ap(either(3)).should.eql(either(null));
+    it('ap left("something") right(2) right(3)', function() {
+      ap(left("something"), right(2), right(3)).should.eql(left("something"));
+      left("something").ap(right(2)).ap(right(3)).should.eql(left("something"));
     });
   });
 
   describe('as monad', function() {
-    function mayFail(a) { return a > 5 ? either(null) : either(2 * a); }
+    function mayFail(a) { return a > 5 ? left("something") : right(2 * a); }
 
     it('of 10 chain mayFail', function() {
-      either.of(10).chain(mayFail).should.eql(either(null));
+      Either.of(10).chain(mayFail).should.eql(left("something"));
     });
 
     it('of 4 chain mayFail', function() {
-      either.of(4).chain(mayFail).should.eql(either(8));
+      Either.of(4).chain(mayFail).should.eql(right(8));
     });
 
-    it('either null chain mayFail', function() {
-      either(null).chain(mayFail).should.eql(either(null));
+    it('right null chain mayFail', function() {
+      left("something").chain(mayFail).should.eql(left("something"));
     });
   });
 });
