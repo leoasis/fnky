@@ -35,7 +35,7 @@ function ap() {
   var aps = Array.prototype.slice.call(arguments);
   return aps.reduce(function(acc, ap) {
     // Guess the pure type from the second applicative
-    acc = acc.coerce(ap.constructor);
+    acc = acc.coerce(ap);
     return acc.ap(ap);
   });
 }
