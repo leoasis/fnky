@@ -114,4 +114,16 @@ describe('monad', function() {
       });
     });
   });
+
+  describe('monadic compose', function() {
+    function duplicate(n) { return [n, n]; }
+    function plusMinus(n) { return [n, -n]; }
+    function withChar(n) { return ['a', n]; }
+
+    it('compose(withChar, duplicate, plusMinus)', function() {
+      var arr = [1, 2, 3];
+      var work = monad.compose(withChar, duplicate, plusMinus);
+      work(arr).should.eql(arr.chain(plusMinus).chain(duplicate).chain(withChar));
+    });
+  });
 });

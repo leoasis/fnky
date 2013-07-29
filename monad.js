@@ -27,9 +27,20 @@ function monad(type, definition) {
   applicative(type, newDefinition);
 }
 
+function compose() {
+  var chains = Array.prototype.slice.call(arguments);
+  return function(monad) {
+    for (var i = chains.length - 1; i >= 0; i--) {
+      monad = monad.chain(chains[i]);
+    }
+    return monad;
+  };
+}
+
 monad.map = applicative.map;
 monad.ap = applicative.ap;
 monad.pure = applicative.pure;
+monad.compose = compose;
 module.exports = monad;
 
 monad(Array, {
