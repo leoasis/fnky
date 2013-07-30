@@ -59,13 +59,6 @@ describe('functor', function() {
       });
     });
 
-    describe('Object functor', function() {
-      it('map inc { a: 1, b: 2, c: 3 }', function() {
-        expect(map(inc, { a: 1, b: 2, c: 3 })).to.eql({ a: 2, b: 3, c: 4 });
-        expect(({ a: 1, b: 2, c: 3 }).map(inc)).to.eql({ a: 2, b: 3, c: 4 });
-      });
-    });
-
     describe('Function functor', function() {
       function half(n) { return n  / 2; }
 

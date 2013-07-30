@@ -1,6 +1,5 @@
 var utils = require('./utils');
 var curried = require('./curried');
-var hasProperty = utils.hasProperty;
 var ownFunctionFrom = utils.ownFunctionFrom;
 
 var functor = function(type, definition) {
@@ -17,17 +16,6 @@ var map = function(f, functor) {
 functor.map = curried(map);
 
 module.exports = functor;
-
-functor(Object, {
-  map: function(f) {
-    var mapped = {};
-    for (var key in this) {
-      if (hasProperty(this, key))
-        mapped[key] = f(this[key]);
-    }
-    return mapped;
-  }
-});
 
 functor(Function, {
   map: function(f) {
