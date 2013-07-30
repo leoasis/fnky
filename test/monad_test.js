@@ -1,35 +1,34 @@
-require('should');
 var monad = require('../monad');
 var pure = monad.pure;
 
 describe('monad', function() {
   describe('definition', function() {
     it('throws if chain not defined', function() {
-      (function() {
+      expect(function() {
         function Monad(){}
         monad(Monad, {
           of: function() {}
         });
-      }).should.throwError("You need to implement the method `chain`");
+      }).to.throw("You need to implement the method `chain`");
     });
 
     it('throws if of not defined', function() {
-      (function() {
+      expect(function() {
         function Monad(){}
         monad(Monad, {
           chain: function() {}
         });
-      }).should.throwError("You need to implement the method `of`");
+      }).to.throw("You need to implement the method `of`");
     });
 
     it('must be enough to define chain and of', function() {
-      (function() {
+      expect(function() {
         function Monad(){}
         monad(Monad, {
           chain: function() {},
           of: function() {}
         });
-      }).should.not.throwError();
+      }).to.not.throw();
     });
 
     describe('when constructed with chain and of only', function() {
@@ -47,25 +46,25 @@ describe('monad', function() {
       });
 
       it('puts the `chain` function in the monad prototype', function() {
-        Monad.prototype.chain.should.equal(chain);
+        expect(Monad.prototype.chain).to.equal(chain);
       });
 
       it('puts the `of` function in the monad constructor', function() {
-        Monad.of.should.equal(of);
+        expect(Monad.of).to.equal(of);
       });
 
       it('derives `map` in terms of `chain` and `of` and puts it in the prototype', function() {
         var map = Monad.prototype.map;
-        map.should.be.an.instanceOf(Function);
-        map.toString().should.include('chain');
-        map.toString().should.include('of');
+        expect(map).to.be.an.instanceOf(Function);
+        expect(map.toString()).to.include('chain');
+        expect(map.toString()).to.include('of');
       });
 
       it('derives `ap` in terms of `chain` and `map` and puts it in the prototype', function() {
         var ap = Monad.prototype.ap;
-        ap.should.be.an.instanceOf(Function);
-        ap.toString().should.include('chain');
-        ap.toString().should.include('map');
+        expect(ap).to.be.an.instanceOf(Function);
+        expect(ap.toString()).to.include('chain');
+        expect(ap.toString()).to.include('map');
       });
     });
 
@@ -87,15 +86,15 @@ describe('monad', function() {
       });
 
       it('preserves `of` if previously defined', function() {
-        Monad.of.should.equal(of);
+        expect(Monad.of).to.equal(of);
       });
 
       it('preserves `ap` if previously defined', function() {
-        Monad.prototype.ap.should.equal(ap);
+        expect(Monad.prototype.ap).to.equal(ap);
       });
 
       it('preserves `map` if previously defined', function() {
-        Monad.prototype.map.should.equal(map);
+        expect(Monad.prototype.map).to.equal(map);
       });
     });
   });
@@ -105,12 +104,12 @@ describe('monad', function() {
       function plusMinus(n) { return [n, -n]; }
 
       it('pure n chain plusMinus', function() {
-        pure(2).coerce(Array).chain(plusMinus).should.eql([2, -2]);
-        Array.of(2).chain(plusMinus).should.eql([2, -2]);
+        expect(pure(2).coerce(Array).chain(plusMinus)).to.eql([2, -2]);
+        expect(Array.of(2).chain(plusMinus)).to.eql([2, -2]);
       });
 
       it('array chain plusMinus', function() {
-        [1, 2, 3].chain(plusMinus).should.eql([1, -1, 2, -2, 3, -3]);
+        expect([1, 2, 3].chain(plusMinus)).to.eql([1, -1, 2, -2, 3, -3]);
       });
     });
   });
@@ -123,7 +122,7 @@ describe('monad', function() {
     it('compose(withChar, duplicate, plusMinus)', function() {
       var arr = [1, 2, 3];
       var work = monad.compose(withChar, duplicate, plusMinus);
-      work(arr).should.eql(arr.chain(plusMinus).chain(duplicate).chain(withChar));
+      expect(work(arr)).to.eql(arr.chain(plusMinus).chain(duplicate).chain(withChar));
     });
   });
 });

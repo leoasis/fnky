@@ -1,4 +1,3 @@
-require('should');
 var curried = require('../curried');
 var Maybe = require('../maybe');
 var map = require('../functor').map;
@@ -11,13 +10,13 @@ describe('Maybe', function() {
     function inc(n) { return n + 1; }
 
     it('map inc Maybe(2)', function() {
-      map(inc, Maybe(2)).should.eql(Maybe(3));
-      Maybe(2).map(inc).should.eql(Maybe(3));
+      expect(map(inc, Maybe(2))).to.eql(Maybe(3));
+      expect(Maybe(2).map(inc)).to.eql(Maybe(3));
     });
 
     it('map inc Maybe(null)', function() {
-      map(inc, Maybe(null)).should.eql(Maybe(null));
-      Maybe(null).map(inc).should.eql(Maybe(null));
+      expect(map(inc, Maybe(null))).to.eql(Maybe(null));
+      expect(Maybe(null).map(inc)).to.eql(Maybe(null));
     });
   });
 
@@ -25,28 +24,28 @@ describe('Maybe', function() {
     var add = curried(function(a, b) { return a + b; });
 
     it('pure/of 2', function() {
-      pure(2).coerce(Maybe).should.eql(Maybe(2));
-      Maybe.of(2).should.eql(Maybe(2));
+      expect(pure(2).coerce(Maybe)).to.eql(Maybe(2));
+      expect(Maybe.of(2)).to.eql(Maybe(2));
     });
 
     it('ap pure(add) Maybe(2) Maybe(3)', function() {
-      ap(pure(add), Maybe(2), Maybe(3)).should.eql(Maybe(5));
-      Maybe.of(add).ap(Maybe(2)).ap(Maybe(3)).should.eql(Maybe(5));
+      expect(ap(pure(add), Maybe(2), Maybe(3))).to.eql(Maybe(5));
+      expect(Maybe.of(add).ap(Maybe(2)).ap(Maybe(3))).to.eql(Maybe(5));
     });
 
     it('ap pure(add) Maybe(null) Maybe(3)', function() {
-      ap(pure(add), Maybe(null), Maybe(3)).should.eql(Maybe(null));
-      Maybe.of(add).ap(Maybe(null)).ap(Maybe(3)).should.eql(Maybe(null));
+      expect(ap(pure(add), Maybe(null), Maybe(3))).to.eql(Maybe(null));
+      expect(Maybe.of(add).ap(Maybe(null)).ap(Maybe(3))).to.eql(Maybe(null));
     });
 
     it('ap pure(add) Maybe(2) Maybe(null)', function() {
-      ap(pure(add), Maybe(2), Maybe(null)).should.eql(Maybe(null));
-      Maybe.of(add).ap(Maybe(2)).ap(Maybe(null)).should.eql(Maybe(null));
+      expect(ap(pure(add), Maybe(2), Maybe(null))).to.eql(Maybe(null));
+      expect(Maybe.of(add).ap(Maybe(2)).ap(Maybe(null))).to.eql(Maybe(null));
     });
 
     it('ap pure(null) Maybe(2) Maybe(3)', function() {
-      ap(pure(null), Maybe(2), Maybe(3)).should.eql(Maybe(null));
-      Maybe.of(null).ap(Maybe(2)).ap(Maybe(3)).should.eql(Maybe(null));
+      expect(ap(pure(null), Maybe(2), Maybe(3))).to.eql(Maybe(null));
+      expect(Maybe.of(null).ap(Maybe(2)).ap(Maybe(3))).to.eql(Maybe(null));
     });
   });
 
@@ -54,15 +53,15 @@ describe('Maybe', function() {
     function mayFail(a) { return a > 5 ? Maybe(null) : Maybe(2 * a); }
 
     it('of 10 chain mayFail', function() {
-      Maybe.of(10).chain(mayFail).should.eql(Maybe(null));
+      expect(Maybe.of(10).chain(mayFail)).to.eql(Maybe(null));
     });
 
     it('of 4 chain mayFail', function() {
-      Maybe.of(4).chain(mayFail).should.eql(Maybe(8));
+      expect(Maybe.of(4).chain(mayFail)).to.eql(Maybe(8));
     });
 
     it('maybe null chain mayFail', function() {
-      Maybe(null).chain(mayFail).should.eql(Maybe(null));
+      expect(Maybe(null).chain(mayFail)).to.eql(Maybe(null));
     });
   });
 });

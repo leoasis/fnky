@@ -1,4 +1,3 @@
-require('should');
 var monoid = require('../monoid');
 var concat = monoid.concat;
 var Sum = monoid.Sum;
@@ -7,21 +6,21 @@ var Product = monoid.Product;
 describe('monoid', function() {
   describe('definition', function() {
     it('throws if empty not defined', function() {
-      (function() {
+      expect(function() {
         function Monoid(){}
         monoid(Monoid, {
           concat: function() {}
         });
-      }).should.throwError("You need to implement the method `empty`");
+      }).to.throw("You need to implement the method `empty`");
     });
 
     it('throws if concat not defined', function() {
-      (function() {
+      expect(function() {
         function Monoid(){}
         monoid(Monoid, {
           empty: function() {}
         });
-      }).should.throwError("You need to implement the method `concat`");
+      }).to.throw("You need to implement the method `concat`");
     });
 
     describe('when fully constructed', function() {
@@ -39,15 +38,15 @@ describe('monoid', function() {
       });
 
       it('puts the `concat` function in the monoid prototype', function() {
-        Monoid.prototype.concat.should.equal(concat);
+        expect(Monoid.prototype.concat).to.equal(concat);
       });
 
       it('puts the `empty` function in the monoid constructor', function() {
-        Monoid.empty.should.equal(empty);
+        expect(Monoid.empty).to.equal(empty);
       });
 
       it('puts the `empty` function in the monoid prototype', function() {
-        Monoid.prototype.empty.should.equal(empty);
+        expect(Monoid.prototype.empty).to.equal(empty);
       });
     });
 
@@ -66,7 +65,7 @@ describe('monoid', function() {
       });
 
       it('preserves `empty` if previously defined', function() {
-        Monoid.empty.should.equal(empty);
+        expect(Monoid.empty).to.equal(empty);
       });
     });
   });
@@ -74,34 +73,34 @@ describe('monoid', function() {
   describe('instances', function() {
     describe('Array instance', function() {
       it('empty', function() {
-        Array.empty().should.eql([]);
+        expect(Array.empty()).to.eql([]);
       });
 
       it('[1, 2, 3] concat [4, 5, 6] concat [7, 8, 9]', function() {
-        concat([1, 2, 3], [4, 5, 6], [7, 8, 9]).should.eql([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-        [1, 2, 3].concat([4, 5, 6]).concat([7, 8, 9]).should.eql([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        expect(concat([1, 2, 3], [4, 5, 6], [7, 8, 9])).to.eql([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        expect([1, 2, 3].concat([4, 5, 6]).concat([7, 8, 9])).to.eql([1, 2, 3, 4, 5, 6, 7, 8, 9]);
       });
     });
 
     describe('Sum instance', function() {
       it('empty', function() {
-        Sum.empty().should.eql(Sum(0));
+        expect(Sum.empty()).to.eql(Sum(0));
       });
 
       it('Sum 1 concat Sum 3 concat Sum 6', function() {
-        concat(Sum(1), Sum(3), Sum(6)).should.eql(Sum(10));
-        Sum(1).concat(Sum(3)).concat(Sum(6)).should.eql(Sum(10));
+        expect(concat(Sum(1), Sum(3), Sum(6))).to.eql(Sum(10));
+        expect(Sum(1).concat(Sum(3)).concat(Sum(6))).to.eql(Sum(10));
       });
     });
 
     describe('Product instance', function() {
       it('empty', function() {
-        Product.empty().should.eql(Product(1));
+        expect(Product.empty()).to.eql(Product(1));
       });
 
       it('Product 1 concat Product 3 concat Product 6', function() {
-        concat(Product(1), Product(3), Product(6)).should.eql(Product(18));
-        Product(1).concat(Product(3)).concat(Product(6)).should.eql(Product(18));
+        expect(concat(Product(1), Product(3), Product(6))).to.eql(Product(18));
+        expect(Product(1).concat(Product(3)).concat(Product(6))).to.eql(Product(18));
       });
     });
   });

@@ -22,7 +22,9 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "grunt": "~0.4.1",
-    "should": "~1.2.2",
-    "grunt-simple-mocha": "~0.4.0"
+    "grunt-simple-mocha": "~0.4.0",
+    "grunt-mocha": "~0.4.0",
+    "grunt-browserify": "~1.2.1",
+    "chai": "~1.7.2"
   }
 }

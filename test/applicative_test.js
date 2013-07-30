@@ -1,4 +1,3 @@
-require('should');
 var curried = require('../curried');
 var applicative = require('../applicative');
 var ap = applicative.ap;
@@ -7,21 +6,21 @@ var pure = applicative.pure;
 describe('applicative', function() {
   describe('definition', function() {
     it('throws if ap not defined', function() {
-      (function() {
+      expect(function() {
         function Applicative(){}
         applicative(Applicative, {
           of: function() {}
         });
-      }).should.throwError("You need to implement the method `ap`");
+      }).to.throw("You need to implement the method `ap`");
     });
 
     it('throws if of not defined', function() {
-      (function() {
+      expect(function() {
         function Applicative(){}
         applicative(Applicative, {
           ap: function() {}
         });
-      }).should.throwError("You need to implement the method `of`");
+      }).to.throw("You need to implement the method `of`");
     });
 
     describe('when fully constructed', function() {
@@ -39,22 +38,22 @@ describe('applicative', function() {
       });
 
       it('puts the `ap` function in the applicative prototype', function() {
-        Applicative.prototype.ap.should.equal(ap);
+        expect(Applicative.prototype.ap).to.equal(ap);
       });
 
       it('puts the `of` function in the applicative constructor', function() {
-        Applicative.of.should.equal(of);
+        expect(Applicative.of).to.equal(of);
       });
 
       it('puts the `of` function in the applicative prototype', function() {
-        Applicative.prototype.of.should.equal(of);
+        expect(Applicative.prototype.of).to.equal(of);
       });
 
       it('derives `map` in terms of `ap` and `of` and puts it in the prototype', function() {
         var map = Applicative.prototype.map;
-        map.should.be.an.instanceOf(Function);
-        map.toString().should.include('ap');
-        map.toString().should.include('of');
+        expect(map).to.be.an.instanceOf(Function);
+        expect(map.toString()).to.include('ap');
+        expect(map.toString()).to.include('of');
       });
     });
 
@@ -74,16 +73,16 @@ describe('applicative', function() {
       });
 
       it('preserves `of` if previously defined', function() {
-        Applicative.of.should.equal(of);
-        Applicative.prototype.of.should.equal(of);
+        expect(Applicative.of).to.equal(of);
+        expect(Applicative.prototype.of).to.equal(of);
       });
 
       it('preserves `ap` if previously defined', function() {
-        Applicative.prototype.ap.should.equal(ap);
+        expect(Applicative.prototype.ap).to.equal(ap);
       });
 
       it('preserves `map` if previously defined', function() {
-        Applicative.prototype.map.should.equal(map);
+        expect(Applicative.prototype.map).to.equal(map);
       });
     });
   });
@@ -93,31 +92,31 @@ describe('applicative', function() {
 
     describe('Array applicative', function() {
       it('pure/of 1', function() {
-        pure(1).coerce(Array).should.eql([1]);
-        Array.of(1).should.eql([1]);
-        [].of(1).should.eql([1]);
+        expect(pure(1).coerce(Array)).to.eql([1]);
+        expect(Array.of(1)).to.eql([1]);
+        expect([].of(1)).to.eql([1]);
       });
 
       it('ap pure(add) [1, 2] [3, 4]', function() {
-        ap(pure(add), [1, 2], [3, 4]).should.eql([4, 5, 5, 6]);
-        Array.of(add).ap([1, 2]).ap([3, 4]).should.eql([4, 5, 5, 6]);
-        //[1, 2].map(add).ap([3, 4]).should.eql([4, 5, 5, 6]);
+        expect(ap(pure(add), [1, 2], [3, 4])).to.eql([4, 5, 5, 6]);
+        expect(Array.of(add).ap([1, 2]).ap([3, 4])).to.eql([4, 5, 5, 6]);
+        //expect([1, 2].map(add).ap([3, 4])).to.eql([4, 5, 5, 6]);
       });
     });
 
     describe('Function applicative', function() {
       it('pure/of 1', function() {
-        pure(1).coerce(Function)("whatever").should.eql(1);
-        Function.of(1)("whatever").should.eql(1);
-        (function() {}).of(1)("whatever").should.eql(1);
+        expect(pure(1).coerce(Function)("whatever")).to.eql(1);
+        expect(Function.of(1)("whatever")).to.eql(1);
+        expect((function() {}).of(1)("whatever")).to.eql(1);
       });
 
       function plus3(n) { return n + 3; }
       function by5(n) { return n * 5; }
 
       it('ap pure(add) plus3 by5', function() {
-        ap(pure(add), plus3, by5)(3).should.eql(21);
-        Function.of(add).ap(plus3).ap(by5)(3).should.eql(21);
+        expect(ap(pure(add), plus3, by5)(3)).to.eql(21);
+        expect(Function.of(add).ap(plus3).ap(by5)(3)).to.eql(21);
       });
     });
   });

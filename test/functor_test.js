@@ -1,14 +1,13 @@
-require('should');
 var functor = require('../functor');
 var map = functor.map;
 
 describe('functor', function() {
   describe('definition', function() {
     it('throws if map not defined', function() {
-      (function() {
+      expect(function() {
         function Functor(){}
         functor(Functor, {});
-      }).should.throwError("You need to implement the method `map`");
+      }).to.throw("You need to implement the method `map`");
     });
 
     describe('when constructed with map', function() {
@@ -24,7 +23,7 @@ describe('functor', function() {
       });
 
       it('puts the `map` function in the functor prototype', function() {
-        Functor.prototype.map.should.equal(map);
+        expect(Functor.prototype.map).to.equal(map);
       });
     });
 
@@ -40,7 +39,7 @@ describe('functor', function() {
       });
 
       it('preserves `map` if previously defined', function() {
-        Functor.prototype.map.should.equal(map);
+        expect(Functor.prototype.map).to.equal(map);
       });
     });
   });
@@ -50,20 +49,20 @@ describe('functor', function() {
 
     describe('Array functor', function() {
       it('map inc [1, 2, 3]', function() {
-        map(inc, [1, 2, 3]).should.eql([2, 3, 4]);
-        [1, 2, 3].map(inc).should.eql([2, 3, 4]);
+        expect(map(inc, [1, 2, 3])).to.eql([2, 3, 4]);
+        expect([1, 2, 3].map(inc)).to.eql([2, 3, 4]);
       });
 
       it('map inc []', function() {
-        map(inc, []).should.eql([]);
-        [].map(inc).should.eql([]);
+        expect(map(inc, [])).to.eql([]);
+        expect([].map(inc)).to.eql([]);
       });
     });
 
     describe('Object functor', function() {
       it('map inc { a: 1, b: 2, c: 3 }', function() {
-        map(inc, { a: 1, b: 2, c: 3 }).should.eql({ a: 2, b: 3, c: 4 });
-        ({ a: 1, b: 2, c: 3 }).map(inc).should.eql({ a: 2, b: 3, c: 4 });
+        expect(map(inc, { a: 1, b: 2, c: 3 })).to.eql({ a: 2, b: 3, c: 4 });
+        expect(({ a: 1, b: 2, c: 3 }).map(inc)).to.eql({ a: 2, b: 3, c: 4 });
       });
     });
 
@@ -71,11 +70,11 @@ describe('functor', function() {
       function half(n) { return n  / 2; }
 
       it('map inc half', function() {
-        map(inc, half)(4).should.equal(3);
-        map(inc, half)(2).should.equal(2);
+        expect(map(inc, half)(4)).to.equal(3);
+        expect(map(inc, half)(2)).to.equal(2);
 
-        half.map(inc)(4).should.equal(3);
-        half.map(inc)(2).should.equal(2);
+        expect(half.map(inc)(4)).to.equal(3);
+        expect(half.map(inc)(2)).to.equal(2);
       });
     });
   });

@@ -1,4 +1,3 @@
-require('should');
 var curried = require('../curried');
 
 describe('curried', function() {
@@ -10,17 +9,17 @@ describe('curried', function() {
     }
     function examples() {
       it('all parameters at once', function() {
-        cadd2(1, 2).should.equal(3);
+        expect(cadd2(1, 2)).to.equal(3);
       });
 
       it('all parameters one by one', function() {
-        cadd2(1)(2).should.equal(3);
+        expect(cadd2(1)(2)).to.equal(3);
       });
 
       it('partially applied, used twice', function() {
         var func = cadd2(1);
-        func(2).should.equal(3);
-        func(3).should.equal(4);
+        expect(func(2)).to.equal(3);
+        expect(func(3)).to.equal(4);
       });
     }
 
@@ -49,17 +48,17 @@ describe('curried', function() {
 
     function examples() {
       it('all parameters at once', function() {
-        cadd3(1, 2, 3).should.equal(6);
+        expect(cadd3(1, 2, 3)).to.equal(6);
       });
 
       it('all parameters one by one', function() {
-        cadd3(1)(2)(3).should.equal(6);
+        expect(cadd3(1)(2)(3)).to.equal(6);
       });
 
       it('partially applied, used twice', function() {
         var func = cadd3(1, 2);
-        func(2).should.equal(5);
-        func(3).should.equal(6);
+        expect(func(2)).to.equal(5);
+        expect(func(3)).to.equal(6);
       });
     }
 
@@ -92,11 +91,11 @@ describe('curried', function() {
     });
 
     it('all parameters at once', function() {
-      cvariable(1, 2).should.equal(2);
+      expect(cvariable(1, 2)).to.equal(2);
     });
 
     it('parameters one by one', function() {
-      cvariable(1)(2).should.equal(2);
+      expect(cvariable(1)(2)).to.equal(2);
     });
   });
 });
