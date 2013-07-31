@@ -42,10 +42,3 @@ monad.ap = applicative.ap;
 monad.pure = applicative.pure;
 monad.compose = compose;
 module.exports = monad;
-
-monad(Array, {
-  chain: function(f) {
-    return this.map(function(x) { return f(x); })
-        .reduce(function(list, x) { return list.concat(x); }, []);
-  }
-});

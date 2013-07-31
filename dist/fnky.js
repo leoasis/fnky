@@ -59,34 +59,7 @@ applicative.map = functor.map;
 applicative.ap = curried(2, ap);
 applicative.pure = pure;
 module.exports = applicative;
-
-applicative(Array, {
-  of: function(value) {
-    return [value];
-  },
-  ap: function(other) {
-    var ret = [];
-    this.forEach(function(f) {
-      other.forEach(function(x) {
-        ret.push(f(x));
-      });
-    });
-    return ret;
-  }
-});
-
-applicative(Function, {
-  of: function(value) {
-    return function() { return value; };
-  },
-  ap: function(other) {
-    var self = this;
-    return function(value) {
-      return self(value)(other(value));
-    };
-  }
-});
-},{"./curried":2,"./functor":4,"./utils":9}],2:[function(require,module,exports){
+},{"./curried":2,"./functor":3,"./utils":13}],2:[function(require,module,exports){
 module.exports = function(length, f) {
   if (arguments.length === 1) {
     f = length;
@@ -106,53 +79,6 @@ function partiallyApply(f, length, args) {
   }
 }
 },{}],3:[function(require,module,exports){
-var monad = require('./monad');
-var map = monad.map;
-var curried = require('./curried');
-
-function Either(left, right) {
-  if (!(this instanceof Either)) return new Either(left, right);
-  this.left = left;
-  this.right = right;
-}
-Either.right = function(right) {
-  return new Either(null, right);
-};
-
-Either.left = function(left) {
-  return new Either(left, null);
-};
-
-module.exports = Either;
-
-Either.prototype.isLeft = function() {
-  return this.right === null || typeof this.right === 'undefined';
-};
-
-monad(Either, {
-  map: function(f) {
-    if (this.isLeft())
-      return Either.left(this.left);
-    else
-      return Either.right(f(this.right));
-  },
-  of: function(value) {
-    return Either.right(value);
-  },
-  ap: function(other) {
-    if (this.isLeft())
-      return Either.left(this.left);
-    else
-      return map(this.right, other);
-  },
-  chain: function(f) {
-    if (this.isLeft())
-      return Either.left(this.left);
-    else
-      return f(this.right);
-  }
-});
-},{"./curried":2,"./monad":7}],4:[function(require,module,exports){
 var utils = require('./utils');
 var curried = require('./curried');
 var ownFunctionFrom = utils.ownFunctionFrom;
@@ -171,57 +97,25 @@ var map = function(f, functor) {
 functor.map = curried(map);
 
 module.exports = functor;
-
-functor(Function, {
-  map: function(f) {
-    var self = this;
-    return function(x) {
-      return f(self(x));
-    };
-  }
-});
-},{"./curried":2,"./utils":9}],5:[function(require,module,exports){
+},{"./curried":2,"./utils":13}],4:[function(require,module,exports){
 var fnky = {
   functor: require('./functor'),
   applicative: require('./applicative'),
   monad: require('./monad'),
   monoid: require('./monoid'),
   curried: require('./curried'),
-  maybe: require('./maybe'),
-  either: require('./either')
+  types: {
+    Maybe: require('./types/maybe'),
+    Either: require('./types/either'),
+    Sum: require('./types/sum'),
+    Product: require('./types/product'),
+    Array: require('./types/array'),
+    Function: require('./types/function')
+  }
 };
 
 module.exports = fnky;
-},{"./applicative":1,"./curried":2,"./either":3,"./functor":4,"./maybe":6,"./monad":7,"./monoid":8}],6:[function(require,module,exports){
-var monad = require('./monad');
-var map = monad.map;
-
-function Maybe(val) {
-  if (!(this instanceof Maybe))
-    return new Maybe(val);
-
-  this.val = val;
-}
-
-Maybe.prototype.isNothing = function() {
-  return this.val === null || typeof this.val === "undefined";
-};
-
-monad(Maybe, {
-  map: function(f) {
-    return this.isNothing() ? Maybe(null) : Maybe(f(this.val));
-  },
-  of: function(val) { return Maybe(val); },
-  ap: function(a) {
-    return this.isNothing() ? Maybe(null) : map(this.val, a);
-  },
-  chain: function(f) {
-    return this.isNothing() ? Maybe(null) : f(this.val);
-  }
-});
-
-module.exports = Maybe;
-},{"./monad":7}],7:[function(require,module,exports){
+},{"./applicative":1,"./curried":2,"./functor":3,"./monad":5,"./monoid":6,"./types/array":7,"./types/either":8,"./types/function":9,"./types/maybe":10,"./types/product":11,"./types/sum":12}],5:[function(require,module,exports){
 var utils = require('./utils');
 var applicative = require('./applicative');
 var ownFunctionFrom = utils.ownFunctionFrom;
@@ -266,14 +160,7 @@ monad.ap = applicative.ap;
 monad.pure = applicative.pure;
 monad.compose = compose;
 module.exports = monad;
-
-monad(Array, {
-  chain: function(f) {
-    return this.map(function(x) { return f(x); })
-        .reduce(function(list, x) { return list.concat(x); }, []);
-  }
-});
-},{"./applicative":1,"./utils":9}],8:[function(require,module,exports){
+},{"./applicative":1,"./utils":13}],6:[function(require,module,exports){
 var utils = require('./utils');
 var curried = require('./curried');
 var ownFunctionFrom = utils.ownFunctionFrom;
@@ -298,28 +185,120 @@ monoid.concat = curried(2, function() {
 
 module.exports = monoid;
 
-// Array
-/////////////////////////////////////////////////////
+// Any, All
+// Ordering
+
+// Maybe(monoid)
+// First Maybe
+// Last Maybe
+},{"./curried":2,"./utils":13}],7:[function(require,module,exports){
+var monad = require('../monad');
+var monoid = require('../monoid');
+
+monad(Array, {
+  // map: already defined in Array
+  of: function(value) {
+    return [value];
+  },
+  ap: function(other) {
+    var ret = [];
+    this.forEach(function(f) {
+      other.forEach(function(x) {
+        ret.push(f(x));
+      });
+    });
+    return ret;
+  },
+  chain: function(f) {
+    return this.map(function(x) { return f(x); })
+        .reduce(function(list, x) { return list.concat(x); }, []);
+  }
+});
+
 monoid(Array, {
   empty: function() { return []; }
   // concat: already defined in Array
 });
 
-// Sum
-/////////////////////////////////////////////////////
-var Sum = monoid.Sum = function(n) {
-  if (!(this instanceof Sum)) return new Sum(n);
-  this.n = n;
+module.exports = Array;
+},{"../monad":5,"../monoid":6}],8:[function(require,module,exports){
+var monad = require('../monad');
+var map = monad.map;
+var curried = require('../curried');
+
+function Either(left, right) {
+  if (!(this instanceof Either)) return new Either(left, right);
+  this.left = left;
+  this.right = right;
+}
+Either.right = function(right) {
+  return new Either(null, right);
 };
 
-monoid(Sum, {
-  empty: function() { return Sum(0); },
-  concat: function(other) { return Sum(this.n + other.n); }
+Either.left = function(left) {
+  return new Either(left, null);
+};
+
+module.exports = Either;
+
+Either.prototype.isLeft = function() {
+  return this.right === null || typeof this.right === 'undefined';
+};
+
+monad(Either, {
+  of: function(value) {
+    return Either.right(value);
+  },
+  chain: function(f) {
+    if (this.isLeft())
+      return Either.left(this.left);
+    else
+      return f(this.right);
+  }
+});
+},{"../curried":2,"../monad":5}],9:[function(require,module,exports){
+var applicative = require('../applicative');
+
+applicative(Function, {
+  of: function(value) {
+    return function() { return value; };
+  },
+  ap: function(other) {
+    var self = this;
+    return function(value) {
+      return self(value)(other(value));
+    };
+  }
 });
 
-// Product
-/////////////////////////////////////////////////////
-var Product = monoid.Product = function(n) {
+module.exports = Function;
+},{"../applicative":1}],10:[function(require,module,exports){
+var monad = require('../monad');
+var map = monad.map;
+
+function Maybe(val) {
+  if (!(this instanceof Maybe))
+    return new Maybe(val);
+
+  this.val = val;
+}
+
+Maybe.prototype.isNothing = function() {
+  return this.val === null || typeof this.val === "undefined";
+};
+
+monad(Maybe, {
+  of: function(val) { return Maybe(val); },
+  chain: function(f) {
+    return this.isNothing() ? Maybe(null) : f(this.val);
+  }
+});
+
+module.exports = Maybe;
+},{"../monad":5}],11:[function(require,module,exports){
+var monoid = require('../monoid');
+
+var Product = function(n) {
   if (!(this instanceof Product)) return new Product(n);
   this.n = n;
 };
@@ -329,13 +308,22 @@ monoid(Product, {
   concat: function(other) { return Product(this.n * other.n); }
 });
 
-// Any, All
-// Ordering
+module.exports = Product;
+},{"../monoid":6}],12:[function(require,module,exports){
+var monoid = require('../monoid');
 
-// Maybe(monoid)
-// First Maybe
-// Last Maybe
-},{"./curried":2,"./utils":9}],9:[function(require,module,exports){
+var Sum = function(n) {
+  if (!(this instanceof Sum)) return new Sum(n);
+  this.n = n;
+};
+
+monoid(Sum, {
+  empty: function() { return Sum(0); },
+  concat: function(other) { return Sum(this.n + other.n); }
+});
+
+module.exports = Sum;
+},{"../monoid":6}],13:[function(require,module,exports){
 var hasProperty = exports.hasProperty = function(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 };
@@ -365,6 +353,6 @@ var messages = {
 exports.check = function(what, message, arg) {
   if (!what) messages[message](arg);
 };
-},{}]},{},[5])(5)
+},{}]},{},[4])(4)
 });
 ;

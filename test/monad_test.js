@@ -1,5 +1,4 @@
 var monad = require('../monad');
-var pure = monad.pure;
 
 describe('monad', function() {
   describe('definition', function() {
@@ -95,21 +94,6 @@ describe('monad', function() {
 
       it('preserves `map` if previously defined', function() {
         expect(Monad.prototype.map).to.equal(map);
-      });
-    });
-  });
-
-  describe('instances', function() {
-    describe('Array monad', function() {
-      function plusMinus(n) { return [n, -n]; }
-
-      it('pure n chain plusMinus', function() {
-        expect(pure(2).coerce(Array).chain(plusMinus)).to.eql([2, -2]);
-        expect(Array.of(2).chain(plusMinus)).to.eql([2, -2]);
-      });
-
-      it('array chain plusMinus', function() {
-        expect([1, 2, 3].chain(plusMinus)).to.eql([1, -1, 2, -2, 3, -3]);
       });
     });
   });

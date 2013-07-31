@@ -57,30 +57,3 @@ applicative.map = functor.map;
 applicative.ap = curried(2, ap);
 applicative.pure = pure;
 module.exports = applicative;
-
-applicative(Array, {
-  of: function(value) {
-    return [value];
-  },
-  ap: function(other) {
-    var ret = [];
-    this.forEach(function(f) {
-      other.forEach(function(x) {
-        ret.push(f(x));
-      });
-    });
-    return ret;
-  }
-});
-
-applicative(Function, {
-  of: function(value) {
-    return function() { return value; };
-  },
-  ap: function(other) {
-    var self = this;
-    return function(value) {
-      return self(value)(other(value));
-    };
-  }
-});

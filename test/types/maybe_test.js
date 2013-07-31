@@ -1,7 +1,7 @@
-var curried = require('../curried');
-var Maybe = require('../maybe');
-var map = require('../functor').map;
-var applicative = require('../applicative');
+var curried = require('../../curried');
+var Maybe = require('../../types/maybe');
+var map = require('../../functor').map;
+var applicative = require('../../applicative');
 var ap = applicative.ap;
 var pure = applicative.pure;
 

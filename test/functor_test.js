@@ -1,5 +1,4 @@
 var functor = require('../functor');
-var map = functor.map;
 
 describe('functor', function() {
   describe('definition', function() {
@@ -40,34 +39,6 @@ describe('functor', function() {
 
       it('preserves `map` if previously defined', function() {
         expect(Functor.prototype.map).to.equal(map);
-      });
-    });
-  });
-
-  describe('instances', function() {
-    function inc(n) { return n + 1; }
-
-    describe('Array functor', function() {
-      it('map inc [1, 2, 3]', function() {
-        expect(map(inc, [1, 2, 3])).to.eql([2, 3, 4]);
-        expect([1, 2, 3].map(inc)).to.eql([2, 3, 4]);
-      });
-
-      it('map inc []', function() {
-        expect(map(inc, [])).to.eql([]);
-        expect([].map(inc)).to.eql([]);
-      });
-    });
-
-    describe('Function functor', function() {
-      function half(n) { return n  / 2; }
-
-      it('map inc half', function() {
-        expect(map(inc, half)(4)).to.equal(3);
-        expect(map(inc, half)(2)).to.equal(2);
-
-        expect(half.map(inc)(4)).to.equal(3);
-        expect(half.map(inc)(2)).to.equal(2);
       });
     });
   });

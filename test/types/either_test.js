@@ -1,9 +1,9 @@
-var curried = require('../curried');
-var Either = require('../either');
+var curried = require('../../curried');
+var Either = require('../../types/either');
 var right = Either.right;
 var left = Either.left;
-var map = require('../functor').map;
-var applicative = require('../applicative');
+var map = require('../../functor').map;
+var applicative = require('../../applicative');
 var ap = applicative.ap;
 var pure = applicative.pure;
 

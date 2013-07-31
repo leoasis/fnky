@@ -4,10 +4,14 @@ var modules = {
   'monad': fnky.monad,
   'monoid': fnky.monoid,
   'curried': fnky.curried,
-  'maybe': fnky.maybe,
-  'either': fnky.either
+  'types/maybe': fnky.types.Maybe,
+  'types/either': fnky.types.Either,
+  'types/sum': fnky.types.Sum,
+  'types/product': fnky.types.Product
 };
 
 function require(what) {
-  return modules[what.replace(/^\.\.\//, '')];
+  what = what.replace(/\.\.\//g, '');
+  console.log(what);
+  return modules[what];
 }

@@ -16,12 +16,3 @@ var map = function(f, functor) {
 functor.map = curried(map);
 
 module.exports = functor;
-
-functor(Function, {
-  map: function(f) {
-    var self = this;
-    return function(x) {
-      return f(self(x));
-    };
-  }
-});
