@@ -9,8 +9,7 @@ var fnky = {
     Either: require('./types/either'),
     Sum: require('./types/sum'),
     Product: require('./types/product'),
-    Array: require('./types/array'),
-    Function: require('./types/function')
+    Array: require('./types/array')
   }
 };
 
