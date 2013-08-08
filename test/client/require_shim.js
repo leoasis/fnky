@@ -4,6 +4,7 @@ var modules = {
   'monad': fnky.monad,
   'monoid': fnky.monoid,
   'curried': fnky.curried,
+  'compose': fnky.compose,
   'types/maybe': fnky.types.Maybe,
   'types/either': fnky.types.Either,
   'types/sum': fnky.types.Sum,

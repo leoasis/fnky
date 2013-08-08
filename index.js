@@ -4,6 +4,7 @@ var fnky = {
   monad: require('./monad'),
   monoid: require('./monoid'),
   curried: require('./curried'),
+  compose: require('./compose'),
   types: require('./types')
 };
 

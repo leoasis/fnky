@@ -59,7 +59,19 @@ applicative.map = functor.map;
 applicative.ap = curried(2, ap);
 applicative.pure = pure;
 module.exports = applicative;
-},{"./curried":2,"./functor":3,"./utils":13}],2:[function(require,module,exports){
+},{"./curried":3,"./functor":4,"./utils":14}],2:[function(require,module,exports){
+module.exports = function() {
+  var funcs = arguments;
+  return function() {
+    var args = arguments;
+    var length = funcs.length;
+    while (length--) {
+      args = [funcs[length].apply(this, args)];
+    }
+    return args[0];
+  };
+};
+},{}],3:[function(require,module,exports){
 module.exports = function(length, f) {
   if (arguments.length === 1) {
     f = length;
@@ -78,7 +90,7 @@ function partiallyApply(f, length, args) {
     };
   }
 }
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 var utils = require('./utils');
 var curried = require('./curried');
 var ownFunctionFrom = utils.ownFunctionFrom;
@@ -97,18 +109,19 @@ var map = function(f, functor) {
 functor.map = curried(map);
 
 module.exports = functor;
-},{"./curried":2,"./utils":13}],4:[function(require,module,exports){
+},{"./curried":3,"./utils":14}],5:[function(require,module,exports){
 var fnky = {
   functor: require('./functor'),
   applicative: require('./applicative'),
   monad: require('./monad'),
   monoid: require('./monoid'),
   curried: require('./curried'),
+  compose: require('./compose'),
   types: require('./types')
 };
 
 module.exports = fnky;
-},{"./applicative":1,"./curried":2,"./functor":3,"./monad":5,"./monoid":6,"./types":9}],5:[function(require,module,exports){
+},{"./applicative":1,"./compose":2,"./curried":3,"./functor":4,"./monad":6,"./monoid":7,"./types":10}],6:[function(require,module,exports){
 var utils = require('./utils');
 var applicative = require('./applicative');
 var ownFunctionFrom = utils.ownFunctionFrom;
@@ -153,7 +166,7 @@ monad.ap = applicative.ap;
 monad.pure = applicative.pure;
 monad.compose = compose;
 module.exports = monad;
-},{"./applicative":1,"./utils":13}],6:[function(require,module,exports){
+},{"./applicative":1,"./utils":14}],7:[function(require,module,exports){
 var utils = require('./utils');
 var curried = require('./curried');
 var ownFunctionFrom = utils.ownFunctionFrom;
@@ -184,7 +197,7 @@ module.exports = monoid;
 // Maybe(monoid)
 // First Maybe
 // Last Maybe
-},{"./curried":2,"./utils":13}],7:[function(require,module,exports){
+},{"./curried":3,"./utils":14}],8:[function(require,module,exports){
 var monad = require('../monad');
 var monoid = require('../monoid');
 
@@ -214,7 +227,7 @@ monoid(Array, {
 });
 
 module.exports = Array;
-},{"../monad":5,"../monoid":6}],8:[function(require,module,exports){
+},{"../monad":6,"../monoid":7}],9:[function(require,module,exports){
 var monad = require('../monad');
 var map = monad.map;
 var curried = require('../curried');
@@ -249,7 +262,7 @@ monad(Either, {
       return f(this.right);
   }
 });
-},{"../curried":2,"../monad":5}],9:[function(require,module,exports){
+},{"../curried":3,"../monad":6}],10:[function(require,module,exports){
 module.exports = {
   Maybe: require('./maybe'),
   Either: require('./either'),
@@ -257,7 +270,7 @@ module.exports = {
   Product: require('./product'),
   Array: require('./array')
 };
-},{"./array":7,"./either":8,"./maybe":10,"./product":11,"./sum":12}],10:[function(require,module,exports){
+},{"./array":8,"./either":9,"./maybe":11,"./product":12,"./sum":13}],11:[function(require,module,exports){
 var monad = require('../monad');
 var map = monad.map;
 
@@ -280,7 +293,7 @@ monad(Maybe, {
 });
 
 module.exports = Maybe;
-},{"../monad":5}],11:[function(require,module,exports){
+},{"../monad":6}],12:[function(require,module,exports){
 var monoid = require('../monoid');
 
 var Product = function(n) {
@@ -294,7 +307,7 @@ monoid(Product, {
 });
 
 module.exports = Product;
-},{"../monoid":6}],12:[function(require,module,exports){
+},{"../monoid":7}],13:[function(require,module,exports){
 var monoid = require('../monoid');
 
 var Sum = function(n) {
@@ -308,7 +321,7 @@ monoid(Sum, {
 });
 
 module.exports = Sum;
-},{"../monoid":6}],13:[function(require,module,exports){
+},{"../monoid":7}],14:[function(require,module,exports){
 var hasProperty = exports.hasProperty = function(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 };
@@ -338,6 +351,6 @@ var messages = {
 exports.check = function(what, message, arg) {
   if (!what) messages[message](arg);
 };
-},{}]},{},[4])(4)
+},{}]},{},[5])(5)
 });
 ;
