@@ -4,13 +4,7 @@ var fnky = {
   monad: require('./monad'),
   monoid: require('./monoid'),
   curried: require('./curried'),
-  types: {
-    Maybe: require('./types/maybe'),
-    Either: require('./types/either'),
-    Sum: require('./types/sum'),
-    Product: require('./types/product'),
-    Array: require('./types/array')
-  }
+  types: require('./types')
 };
 
 module.exports = fnky;

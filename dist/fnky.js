@@ -59,7 +59,7 @@ applicative.map = functor.map;
 applicative.ap = curried(2, ap);
 applicative.pure = pure;
 module.exports = applicative;
-},{"./curried":2,"./functor":3,"./utils":12}],2:[function(require,module,exports){
+},{"./curried":2,"./functor":3,"./utils":13}],2:[function(require,module,exports){
 module.exports = function(length, f) {
   if (arguments.length === 1) {
     f = length;
@@ -97,24 +97,18 @@ var map = function(f, functor) {
 functor.map = curried(map);
 
 module.exports = functor;
-},{"./curried":2,"./utils":12}],4:[function(require,module,exports){
+},{"./curried":2,"./utils":13}],4:[function(require,module,exports){
 var fnky = {
   functor: require('./functor'),
   applicative: require('./applicative'),
   monad: require('./monad'),
   monoid: require('./monoid'),
   curried: require('./curried'),
-  types: {
-    Maybe: require('./types/maybe'),
-    Either: require('./types/either'),
-    Sum: require('./types/sum'),
-    Product: require('./types/product'),
-    Array: require('./types/array')
-  }
+  types: require('./types')
 };
 
 module.exports = fnky;
-},{"./applicative":1,"./curried":2,"./functor":3,"./monad":5,"./monoid":6,"./types/array":7,"./types/either":8,"./types/maybe":9,"./types/product":10,"./types/sum":11}],5:[function(require,module,exports){
+},{"./applicative":1,"./curried":2,"./functor":3,"./monad":5,"./monoid":6,"./types":9}],5:[function(require,module,exports){
 var utils = require('./utils');
 var applicative = require('./applicative');
 var ownFunctionFrom = utils.ownFunctionFrom;
@@ -159,7 +153,7 @@ monad.ap = applicative.ap;
 monad.pure = applicative.pure;
 monad.compose = compose;
 module.exports = monad;
-},{"./applicative":1,"./utils":12}],6:[function(require,module,exports){
+},{"./applicative":1,"./utils":13}],6:[function(require,module,exports){
 var utils = require('./utils');
 var curried = require('./curried');
 var ownFunctionFrom = utils.ownFunctionFrom;
@@ -190,7 +184,7 @@ module.exports = monoid;
 // Maybe(monoid)
 // First Maybe
 // Last Maybe
-},{"./curried":2,"./utils":12}],7:[function(require,module,exports){
+},{"./curried":2,"./utils":13}],7:[function(require,module,exports){
 var monad = require('../monad');
 var monoid = require('../monoid');
 
@@ -256,6 +250,14 @@ monad(Either, {
   }
 });
 },{"../curried":2,"../monad":5}],9:[function(require,module,exports){
+module.exports = {
+  Maybe: require('./maybe'),
+  Either: require('./either'),
+  Sum: require('./sum'),
+  Product: require('./product'),
+  Array: require('./array')
+};
+},{"./array":7,"./either":8,"./maybe":10,"./product":11,"./sum":12}],10:[function(require,module,exports){
 var monad = require('../monad');
 var map = monad.map;
 
@@ -278,7 +280,7 @@ monad(Maybe, {
 });
 
 module.exports = Maybe;
-},{"../monad":5}],10:[function(require,module,exports){
+},{"../monad":5}],11:[function(require,module,exports){
 var monoid = require('../monoid');
 
 var Product = function(n) {
@@ -292,7 +294,7 @@ monoid(Product, {
 });
 
 module.exports = Product;
-},{"../monoid":6}],11:[function(require,module,exports){
+},{"../monoid":6}],12:[function(require,module,exports){
 var monoid = require('../monoid');
 
 var Sum = function(n) {
@@ -306,7 +308,7 @@ monoid(Sum, {
 });
 
 module.exports = Sum;
-},{"../monoid":6}],12:[function(require,module,exports){
+},{"../monoid":6}],13:[function(require,module,exports){
 var hasProperty = exports.hasProperty = function(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 };
