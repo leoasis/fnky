@@ -1,6 +1,6 @@
 {
   "name": "fnky",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A funky (and \"souly\"?) library for functional programming in Javascript",
   "main": "index.js",
   "directories": {

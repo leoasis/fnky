@@ -1,4 +1,4 @@
-// fnky v0.0.1
+// fnky v0.1.0
 // (c) 2013 Leonardo Garcia Crespo
 // Distributed Under MIT License
 (function(e){if("function"==typeof bootstrap)bootstrap("fnky",e);else if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else if("undefined"!=typeof ses){if(!ses.ok())return;ses.makeFnky=e}else"undefined"!=typeof window?window.fnky=e():global.fnky=e()})(function(){var define,ses,bootstrap,module,exports;
